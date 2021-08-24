@@ -1,0 +1,71 @@
+\documentclass[pagesize=auto,bibliography=totocnumbered]{scrbook}
+
+\title{Learn to Code in C\#: An Introduction with Media Computation}
+\author{Dr Michael James Scott} % Author
+
+\usepackage{ifpdf}
+\usepackage{tikz,pgfplots}
+\usepackage{amsmath}
+\usepackage{minted}
+\usepackage{hyperref}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{external}
+\tikzexternalize[
+    prefix={images/tikz/}
+]
+
+\ifpdf
+\tikzset{
+    export as svg/.style={
+        external/system call/.add={}{
+            && pdf2svg "\image.pdf" "\image.svg"
+%            && magick convert -density #1 -transparent white "\image.pdf" "\image.png" && ebb -x "\image.png"
+        },
+%        /pgf/images/external info, /pgf/images/include external/.code={ \setlength{\fboxrule}{0pt} \fbox{\includegraphics[scale=.24]{##1.png}} }
+    },
+    export as png/.default={144},
+}
+\tikzset{export as svg}
+\else 
+\pgfkeys{/pgf/images/include external/.code={ \includegraphics{#1.svg} } }
+\fi
+
+\immediate\write18{if not exist tikz_external mkdir images/tikz}
+
+\ifdefined\HCode
+  \def\pgfsysdriver{pgfsys-dvisvgm4ht.def}
+\fi 
+
+\colorlet{LightGray}{gray!5}
+
+
+\usepackage{xspace}
+\usepackage{hyphenat}
+\hyphenation{}
+
+\input{lib/use-packages}
+
+\begin{document}
+\frontmatter
+
+% front matter chapter entries use roman page numbering (i, ii, iii, iv, ...)
+\pagenumbering{roman}
+
+\input{title.tex}
+
+\input{publisher.tex}\newpage
+
+%\input{lib/tableofcontents}\newpage
+
+\renewcommand*{\chapterpagestyle}{plain}
+
+\mainmatter
+
+% reset to normal page numbering (1, 2, 3, ...)
+\pagenumbering{arabic}
+
+\foreach \x in {1,...,3} {
+     \input{chapters/\x}\newpage
+ }
+
+\end{document}
